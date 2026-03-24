@@ -10165,7 +10165,7 @@ end
 
 task.spawn(function()
     while task.wait() do
-        _G.Fast_Delay = 0.15
+        _G.Fast_Delay = 0.015
         local lastAttack = 0
         -- Só executa se o toggle estiver ativado
         if _G.AutoAttack then
