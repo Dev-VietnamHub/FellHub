@@ -10165,63 +10165,67 @@ end
 
 task.spawn(function()
     while task.wait() do
-        _G.Fast_Delay = 0.015
-        local lastAttack = 0
-		local now = os.clock()
-		if tick() - (getgenv().AutoAttack or 0) < cd then
-        -- Só executa se o toggle estiver ativado
+        -- 1. Định nghĩa tốc độ đánh (Delay)
+        _G.Fast_Delay = 0.015 
+        local cd = _G.Fast_Delay
+        
+        -- 2. Kiểm tra Cooldown (Sửa lỗi logic tại đây)
+        if tick() - (getgenv().LastAttack_Time or 0) < cd then 
+            continue -- Chưa đến lúc đánh thì bỏ qua lượt này, đợi lượt tiếp theo
+        end
+
+        -- 3. Chỉ thực hiện nếu Toggle đang bật
         if _G.AutoAttack then
             local _Character = game.Players.LocalPlayer.Character
-            local v13
+            local v13 = _Character and _Character:FindFirstChild('HumanoidRootPart')
 
-            if _Character then
-                v13 = _Character:FindFirstChild('HumanoidRootPart')
-            else
-                v13 = _Character
-            end
+            if v13 then
+                local u17 = {}
+                -- Quét kẻ địch
+                local folders = {workspace.Enemies, workspace.Characters}
+                for _, folder in ipairs(folders) do
+                    if folder then
+                        for _, v22 in ipairs(folder:GetChildren()) do
+                            local _HumanoidRootPart = v22:FindFirstChild('HumanoidRootPart')
+                            local _Humanoid = v22:FindFirstChild('Humanoid')
 
-            local v14, v15, v16 = ipairs({
-                workspace.Enemies,
-                workspace.Characters,
-            })
-            local u17 = {}
-
-            while true do
-                local v18
-
-                v16, v18 = v14(v15, v16)
-
-                if v16 == nil then
-                    break
+                            if v22 ~= _Character and _HumanoidRootPart and _Humanoid and _Humanoid.Health > 0 then
+                                if (_HumanoidRootPart.Position - v13.Position).Magnitude <= 60 then
+                                    table.insert(u17, {v22, _HumanoidRootPart})
+                                end
+                            end
+                        end
+                    end
                 end
 
-                local v19, v20, v21 = ipairs(v18 and v18:GetChildren() or {})
+                local _Tool = _Character:FindFirstChildOfClass('Tool')
+                if #u17 > 0 and (_Tool and (_Tool:GetAttribute('WeaponType') == 'Melee' or _Tool:GetAttribute('WeaponType') == 'Sword')) then
+                    -- Cập nhật thời gian đánh để tính Cooldown cho lượt sau
+                    getgenv().LastAttack_Time = tick()
 
-                while true do
-                    local v22
+                    pcall(function()
+                        -- Gửi lệnh đánh lên Server
+                        require(game.ReplicatedStorage.Modules.Net):RemoteEvent('RegisterHit', true)
+                        game.ReplicatedStorage.Modules.Net['RE/RegisterAttack']:FireServer()
 
-                    v21, v22 = v19(v20, v21)
-
-                    if v21 == nil then
-                        break
-                    end
-
-                    local _HumanoidRootPart = v22:FindFirstChild('HumanoidRootPart')
-                    local _Humanoid = v22:FindFirstChild('Humanoid')
-
-                    if v22 ~= _Character and (_HumanoidRootPart and (_Humanoid and (_Humanoid.Health > 0 and (_HumanoidRootPart.Position - v13.Position).Magnitude <= 60))) then
-                        local v25, v26, v27 = ipairs(v22:GetChildren())
-
-                        while true do
-                            local v28
-
-                            v27, v28 = v25(v26, v27)
-
-                            if v27 == nil then
-                                break
+                        local _Head = u17[1][1]:FindFirstChild('Head')
+                        if _Head then
+                            -- Gửi dữ liệu sát thương
+                            game.ReplicatedStorage.Modules.Net['RE/RegisterHit']:FireServer(_Head, u17, {}, tostring(game.Players.LocalPlayer.UserId):sub(2, 4) .. tostring(coroutine.running()):sub(11, 15))
+                            
+                            -- Phần bypass nâng cao (giữ nguyên logic gốc của bạn)
+                            if u4 and u5 then
+                                cloneref(u4):FireServer(string.gsub('RE/RegisterHit', '.', function(p31)
+                                    return string.char(bit32.bxor(string.byte(p31), math.floor(workspace:GetServerTimeNow() / 10 % 10) + 1))
+                                end), bit32.bxor(u5 + 909090, game.ReplicatedStorage.Modules.Net.seed:InvokeServer() * 2), _Head, u17)
                             end
-                            if v28:IsA('BasePart') and (_HumanoidRootPart.Position - v13.Position).Magnitude <= 60 then
-                                u17[#u17 + 1] = {v22, v28}
+                        end
+                    end)
+                end
+            end
+        end
+    end
+end)
                             end
                         end
                     end
