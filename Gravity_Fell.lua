@@ -10226,32 +10226,6 @@ task.spawn(function()
         end
     end
 end)
-                            end
-                        end
-                    end
-                end
-            end
-
-            local _Tool = _Character:FindFirstChildOfClass('Tool')
-
-            if #u17 > 0 and (_Tool and (_Tool:GetAttribute('WeaponType') == 'Melee' or _Tool:GetAttribute('WeaponType') == 'Sword')) then
-                pcall(function()
-                    require(game.ReplicatedStorage.Modules.Net):RemoteEvent('RegisterHit', true)
-                    game.ReplicatedStorage.Modules.Net['RE/RegisterAttack']:FireServer()
-
-                    local _Head = u17[1][1]:FindFirstChild('Head')
-
-                    if _Head then
-                        game.ReplicatedStorage.Modules.Net['RE/RegisterHit']:FireServer(_Head, u17, {}, tostring(game.Players.LocalPlayer.UserId):sub(2, 4) .. tostring(coroutine.running()):sub(11, 15))
-                        cloneref(u4):FireServer(string.gsub('RE/RegisterHit', '.', function(p31)
-                            return string.char(bit32.bxor(string.byte(p31), math.floor(workspace:GetServerTimeNow() / 10 % 10) + 1))
-                        end), bit32.bxor(u5 + 909090, game.ReplicatedStorage.Modules.Net.seed:InvokeServer() * 2), _Head, u17)
-                    end
-                end)
-            end
-        end
-    end
-end)
 v496:AddToggle({
     Name = "Bring Mob",
     Description = "",
