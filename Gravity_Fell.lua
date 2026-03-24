@@ -10168,7 +10168,7 @@ task.spawn(function()
         _G.Fast_Delay = 0.015
         local lastAttack = 0
 		local now = os.clock()
-		if tick() - (getgenv().PMTXGRAVITY_FA_LAST or 0) < cd then
+		if tick() - (getgenv().AutoAttack or 0) < cd then
         -- Só executa se o toggle estiver ativado
         if _G.AutoAttack then
             local _Character = game.Players.LocalPlayer.Character
