@@ -10236,45 +10236,32 @@ v496:AddToggle({
         StopTween(_G.BringMonster)
     end
 })
-_G.BringMonster = true
--- [SetValue skipped - Library không cần]
 spawn(function()
-    while wait() do
+    while task.wait() do
         pcall(function()
-            local v857, v858, v859 = pairs(game:GetService("Workspace").Enemies:GetChildren())
-            while true do
-                local v860
-                v859, v860 = v857(v858, v859)
-                if v859 == nil then
-                    break
-                end
-                if _G.BringMob and (bringmob and (v860.Name == MonFarm and (v860:FindFirstChild("Humanoid") and v860.Humanoid.Health > 0))) then
-                    if v860.Name ~= "Factory Staff" then
-                        if v860.Name == MonFarm and (v860.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 1000000000 then
-                            v860.HumanoidRootPart.CFrame = FarmPos
-                            v860.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v860.HumanoidRootPart.Transparency = 1
-                            v860.Humanoid.JumpPower = 0
-                            v860.Humanoid.WalkSpeed = 0
-                            if v860.Humanoid:FindFirstChild("Animator") then
-                                v860.Humanoid.Animator:Destroy()
+            CheckQuest()
+            for _, v1167 in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                if _G.BringMonster and (StartBring and v1167.Name == MonFarm or v1167.Name == Mon and v1167:FindFirstChild("Humanoid") and v1167:FindFirstChild("HumanoidRootPart") and v1167.Humanoid.Health > 0 and (v1167.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 320) then
+                    if v1167.Name == "Factory Staff" then
+                        if (v1167.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 250 then
+                            v1167.Head.CanCollide = false
+                            v1167.HumanoidRootPart.CanCollide = false
+                            v1167.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v1167.HumanoidRootPart.CFrame = PosMon
+                            if v1167.Humanoid:FindFirstChild("Animator") then
+                                v1167.Humanoid.Animator:Destroy()
                             end
-                            v860.HumanoidRootPart.CanCollide = false
-                            v860.Head.CanCollide = false
-                            v860.Humanoid:ChangeState(11)
-                            v860.Humanoid:ChangeState(14)
-                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                            sethiddenproperty(game:GetService("Players").LocalPlayer, "SimulationRadius", math.huge)
                         end
-                    elseif (v860.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 1000000000 then
-                        v860.Head.CanCollide = false
-                        v860.HumanoidRootPart.CanCollide = false
-                        v860.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                        v860.HumanoidRootPart.CFrame = FarmPos
-                        if v860.Humanoid:FindFirstChild("Animator") then
-                            v860.Humanoid.Animator:Destroy()
+                    elseif (v1167.Name == MonFarm or v1167.Name == Mon) and (v1167.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 320 then
+                        v1167.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                        v1167.HumanoidRootPart.CFrame = PosMon
+                        v1167.HumanoidRootPart.CanCollide = false
+                        v1167.Head.CanCollide = false
+                        if v1167.Humanoid:FindFirstChild("Animator") then
+                            v1167.Humanoid.Animator:Destroy()
                         end
                         sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-                    end
                 end
             end
         end)
