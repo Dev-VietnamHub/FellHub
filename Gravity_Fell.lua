@@ -10226,6 +10226,7 @@ task.spawn(function()
         end
     end
 end)
+print("🔥 Chế Độ Hủy Diệt Đã Được Bật! 🔥")
 v496:AddToggle({
     Name = "Bring Mob",
     Description = "",
